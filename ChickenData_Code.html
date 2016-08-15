@@ -151,7 +151,8 @@ summary(ChickWeight)</code></pre>
 ##                                  (Other):506</code></pre>
 <p>Load required libraries</p>
 <pre class="r"><code>library(dplyr) 
-library(tidyr) #for 'unite' function</code></pre>
+library(tidyr) #for 'unite' function
+library(knitr)</code></pre>
 <p><strong>2. Produce a new dataset with summaries of chicken weight</strong></p>
 <pre class="r"><code>DataStats &lt;- ChickWeight %&gt;%
         select(weight, Time, Diet) %&gt;%
@@ -165,11 +166,154 @@ library(tidyr) #for 'unite' function</code></pre>
                 Max = max(weight)
                 ) %&gt;%
         unite(Mean_SD, Mean, SD, sep = &quot;.&quot;, remove = FALSE) %&gt;% #Create new variable with MeanSD 
-        unite(Range, Min, Max, sep = &quot;-&quot;, remove = FALSE) #Create new column with Min-Max into the same column</code></pre>
+        unite(Range, Min, Max, sep = &quot;-&quot;, remove = FALSE)  #Create new column with Min-Max into the same column 
+
+
+kable(head(DataStats))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Diet</th>
+<th align="right">Time</th>
+<th align="right">N</th>
+<th align="left">Mean_SD</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Median</th>
+<th align="left">Range</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">20</td>
+<td align="left">41.4.0.99472291830968</td>
+<td align="right">41.40000</td>
+<td align="right">0.9947229</td>
+<td align="right">41</td>
+<td align="left">39-43</td>
+<td align="right">39</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">2</td>
+<td align="right">20</td>
+<td align="left">47.25.4.27815749814653</td>
+<td align="right">47.25000</td>
+<td align="right">4.2781575</td>
+<td align="right">49</td>
+<td align="left">35-51</td>
+<td align="right">35</td>
+<td align="right">51</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">4</td>
+<td align="right">19</td>
+<td align="left">56.4736842105263.4.12806682025795</td>
+<td align="right">56.47368</td>
+<td align="right">4.1280668</td>
+<td align="right">56</td>
+<td align="left">48-63</td>
+<td align="right">48</td>
+<td align="right">63</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">6</td>
+<td align="right">19</td>
+<td align="left">66.7894736842105.7.75728293905097</td>
+<td align="right">66.78947</td>
+<td align="right">7.7572829</td>
+<td align="right">67</td>
+<td align="left">51-84</td>
+<td align="right">51</td>
+<td align="right">84</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">8</td>
+<td align="right">19</td>
+<td align="left">79.6842105263158.13.7761977965981</td>
+<td align="right">79.68421</td>
+<td align="right">13.7761978</td>
+<td align="right">79</td>
+<td align="left">57-112</td>
+<td align="right">57</td>
+<td align="right">112</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">10</td>
+<td align="right">19</td>
+<td align="left">93.0526315789474.22.5424875000533</td>
+<td align="right">93.05263</td>
+<td align="right">22.5424875</td>
+<td align="right">93</td>
+<td align="left">51-139</td>
+<td align="right">51</td>
+<td align="right">139</td>
+</tr>
+</tbody>
+</table>
 <p>DataStats has 48 observations and 10 variables</p>
 <p><strong>3. Make the dataset into a “longer” format by converting the columns with statistical calculations into a column</strong></p>
 <pre class="r"><code>LongData &lt;- DataStats  %&gt;%
-        gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:10) #selecting the columns that we want to rearrange </code></pre>
+        gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:10) #selecting the columns that we want to rearrange 
+
+kable(head(LongData))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Diet</th>
+<th align="right">Time</th>
+<th align="left">Statistics</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="left">N</td>
+<td align="left">20</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">2</td>
+<td align="left">N</td>
+<td align="left">20</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">4</td>
+<td align="left">N</td>
+<td align="left">19</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">6</td>
+<td align="left">N</td>
+<td align="left">19</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">8</td>
+<td align="left">N</td>
+<td align="left">19</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">10</td>
+<td align="left">N</td>
+<td align="left">19</td>
+</tr>
+</tbody>
+</table>
 <p>LongData has 384 observations and 4 variables</p>
 <p><strong>4. Move <code>Diet</code> groups from rows into columns. This time using numbers attached to the columns of statistics so that we can reorder them afterwards</strong></p>
 <pre class="r"><code>TimesByDiet &lt;- ChickWeight %&gt;%
@@ -189,7 +333,78 @@ library(tidyr) #for 'unite' function</code></pre>
         gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:6) %&gt;%
         spread(Diet, Value, sep = &quot;.&quot;) %&gt;% #Move diet groups from rows to columns
         separate(Statistics, c(&quot;Stats&quot;, &quot;Order&quot;), sep = &quot;\\.&quot;, remove = TRUE) %&gt;% #Separate Stats column into two
-        arrange(Time, Order) #reorder the dataset to have statistics by the appropriate order(N, Mean-SD, Median, Range)</code></pre>
+        arrange(Time, Order) #reorder the dataset to have statistics by the appropriate order(N, Mean-SD, Median, Range)
+
+kable(head(TimesByDiet))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Time</th>
+<th align="left">Stats</th>
+<th align="left">Order</th>
+<th align="left">Diet.1</th>
+<th align="left">Diet.2</th>
+<th align="left">Diet.3</th>
+<th align="left">Diet.4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">N</td>
+<td align="left">1</td>
+<td align="left">20</td>
+<td align="left">10</td>
+<td align="left">10</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">Median</td>
+<td align="left">4</td>
+<td align="left">41</td>
+<td align="left">40.5</td>
+<td align="left">41</td>
+<td align="left">41</td>
+</tr>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">Mean_SD</td>
+<td align="left">8</td>
+<td align="left">41.4.0.99472291830968</td>
+<td align="left">40.7.1.49443411809733</td>
+<td align="left">40.8.1.03279555898864</td>
+<td align="left">41.1.05409255338946</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">Range</td>
+<td align="left">9</td>
+<td align="left">39-43</td>
+<td align="left">39-43</td>
+<td align="left">39-42</td>
+<td align="left">39-42</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">N</td>
+<td align="left">1</td>
+<td align="left">20</td>
+<td align="left">10</td>
+<td align="left">10</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Median</td>
+<td align="left">4</td>
+<td align="left">49</td>
+<td align="left">48.5</td>
+<td align="left">49.5</td>
+<td align="left">51.5</td>
+</tr>
+</tbody>
+</table>
 <p>This dataset has 48 observations and 7 variables</p>
 <p><strong>5. Format data with <em>sprintf</em> function to present statistics into a consistent format</strong></p>
 <pre class="r"><code>#By using mutate and sprintf, there is no longer need to attach numbers to the variable names to put them in the right order, as they come in the order that we input in the code
@@ -213,7 +428,71 @@ Chick_print &lt;- ChickWeight %&gt;%
                ) %&gt;%
         select(Diet, Time, N, pMeanSD, pMedian, pMinMax) %&gt;% #select only the variables of interest
         gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:6) %&gt;% #Get statistics into rows
-        spread(Diet, Value, sep = &quot;.&quot;) #Produce a dataset with diets in columns</code></pre>
+        spread(Diet, Value, sep = &quot;.&quot;) #Produce a dataset with diets in columns
+
+kable(head(Chick_print))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Time</th>
+<th align="left">Statistics</th>
+<th align="left">Diet.1</th>
+<th align="left">Diet.2</th>
+<th align="left">Diet.3</th>
+<th align="left">Diet.4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">N</td>
+<td align="left">20</td>
+<td align="left">10</td>
+<td align="left">10</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">pMeanSD</td>
+<td align="left">41.4( 0.99)</td>
+<td align="left">40.7( 1.49)</td>
+<td align="left">40.8( 1.03)</td>
+<td align="left">41.0( 1.05)</td>
+</tr>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">pMedian</td>
+<td align="left">41.0</td>
+<td align="left">40.5</td>
+<td align="left">41.0</td>
+<td align="left">41.0</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">pMinMax</td>
+<td align="left">39.0- 43.0</td>
+<td align="left">39.0- 43.0</td>
+<td align="left">39.0- 42.0</td>
+<td align="left">39.0- 42.0</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">N</td>
+<td align="left">20</td>
+<td align="left">10</td>
+<td align="left">10</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">pMeanSD</td>
+<td align="left">47.2( 4.28)</td>
+<td align="left">49.4( 2.88)</td>
+<td align="left">50.4( 2.41)</td>
+<td align="left">51.8( 1.93)</td>
+</tr>
+</tbody>
+</table>
 <p>This dataset has 48 observations and 6 variables</p>
 </div>
 

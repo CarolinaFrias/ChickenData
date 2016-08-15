@@ -36,6 +36,7 @@ Load required libraries
 ```{r load required libraries, message = FALSE}
 library(dplyr) 
 library(tidyr) #for 'unite' function
+library(knitr)
 ```
 
 
@@ -55,8 +56,12 @@ DataStats <- ChickWeight %>%
                 Max = max(weight)
                 ) %>%
         unite(Mean_SD, Mean, SD, sep = ".", remove = FALSE) %>% #Create new variable with MeanSD 
-        unite(Range, Min, Max, sep = "-", remove = FALSE) #Create new column with Min-Max into the same column
+        unite(Range, Min, Max, sep = "-", remove = FALSE)  #Create new column with Min-Max into the same column 
+
+
+kable(head(DataStats))
 ```
+
 DataStats has 48 observations and 10 variables
 
 
@@ -66,7 +71,10 @@ DataStats has 48 observations and 10 variables
 
 LongData <- DataStats  %>%
         gather("Statistics", "Value", 3:10) #selecting the columns that we want to rearrange 
+
+kable(head(LongData))
 ```
+
 LongData has 384 observations and 4 variables
 
 
@@ -90,7 +98,10 @@ TimesByDiet <- ChickWeight %>%
         spread(Diet, Value, sep = ".") %>% #Move diet groups from rows to columns
         separate(Statistics, c("Stats", "Order"), sep = "\\.", remove = TRUE) %>% #Separate Stats column into two
         arrange(Time, Order) #reorder the dataset to have statistics by the appropriate order(N, Mean-SD, Median, Range)
+
+kable(head(TimesByDiet))
 ```
+
 This dataset has 48 observations and 7 variables
 
 
@@ -119,6 +130,9 @@ Chick_print <- ChickWeight %>%
         select(Diet, Time, N, pMeanSD, pMedian, pMinMax) %>% #select only the variables of interest
         gather("Statistics", "Value", 3:6) %>% #Get statistics into rows
         spread(Diet, Value, sep = ".") #Produce a dataset with diets in columns
+
+kable(head(Chick_print))
 ```
+
 This dataset has 48 observations and 6 variables
 
