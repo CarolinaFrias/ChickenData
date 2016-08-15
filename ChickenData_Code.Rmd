@@ -58,7 +58,9 @@ DataStats <- ChickWeight %>%
         unite(Mean_SD, Mean, SD, sep = ".", remove = FALSE) %>% #Create new variable with MeanSD 
         unite(Range, Min, Max, sep = "-", remove = FALSE)  #Create new column with Min-Max into the same column 
 
+```
 
+```{r table1}
 kable(head(DataStats))
 ```
 
@@ -71,7 +73,9 @@ DataStats has 48 observations and 10 variables
 
 LongData <- DataStats  %>%
         gather("Statistics", "Value", 3:10) #selecting the columns that we want to rearrange 
+```
 
+```{r table2}
 kable(head(LongData))
 ```
 
@@ -99,6 +103,9 @@ TimesByDiet <- ChickWeight %>%
         separate(Statistics, c("Stats", "Order"), sep = "\\.", remove = TRUE) %>% #Separate Stats column into two
         arrange(Time, Order) #reorder the dataset to have statistics by the appropriate order(N, Mean-SD, Median, Range)
 
+```
+
+```{r table3}
 kable(head(TimesByDiet))
 ```
 
@@ -131,6 +138,9 @@ Chick_print <- ChickWeight %>%
         gather("Statistics", "Value", 3:6) %>% #Get statistics into rows
         spread(Diet, Value, sep = ".") #Produce a dataset with diets in columns
 
+```
+
+```{r table4}
 kable(head(Chick_print))
 ```
 

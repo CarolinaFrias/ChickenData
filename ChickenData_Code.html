@@ -166,10 +166,8 @@ library(knitr)</code></pre>
                 Max = max(weight)
                 ) %&gt;%
         unite(Mean_SD, Mean, SD, sep = &quot;.&quot;, remove = FALSE) %&gt;% #Create new variable with MeanSD 
-        unite(Range, Min, Max, sep = &quot;-&quot;, remove = FALSE)  #Create new column with Min-Max into the same column 
-
-
-kable(head(DataStats))</code></pre>
+        unite(Range, Min, Max, sep = &quot;-&quot;, remove = FALSE)  #Create new column with Min-Max into the same column </code></pre>
+<pre class="r"><code>kable(head(DataStats))</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -263,9 +261,8 @@ kable(head(DataStats))</code></pre>
 <p>DataStats has 48 observations and 10 variables</p>
 <p><strong>3. Make the dataset into a “longer” format by converting the columns with statistical calculations into a column</strong></p>
 <pre class="r"><code>LongData &lt;- DataStats  %&gt;%
-        gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:10) #selecting the columns that we want to rearrange 
-
-kable(head(LongData))</code></pre>
+        gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:10) #selecting the columns that we want to rearrange </code></pre>
+<pre class="r"><code>kable(head(LongData))</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -333,9 +330,8 @@ kable(head(LongData))</code></pre>
         gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:6) %&gt;%
         spread(Diet, Value, sep = &quot;.&quot;) %&gt;% #Move diet groups from rows to columns
         separate(Statistics, c(&quot;Stats&quot;, &quot;Order&quot;), sep = &quot;\\.&quot;, remove = TRUE) %&gt;% #Separate Stats column into two
-        arrange(Time, Order) #reorder the dataset to have statistics by the appropriate order(N, Mean-SD, Median, Range)
-
-kable(head(TimesByDiet))</code></pre>
+        arrange(Time, Order) #reorder the dataset to have statistics by the appropriate order(N, Mean-SD, Median, Range)</code></pre>
+<pre class="r"><code>kable(head(TimesByDiet))</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -428,9 +424,8 @@ Chick_print &lt;- ChickWeight %&gt;%
                ) %&gt;%
         select(Diet, Time, N, pMeanSD, pMedian, pMinMax) %&gt;% #select only the variables of interest
         gather(&quot;Statistics&quot;, &quot;Value&quot;, 3:6) %&gt;% #Get statistics into rows
-        spread(Diet, Value, sep = &quot;.&quot;) #Produce a dataset with diets in columns
-
-kable(head(Chick_print))</code></pre>
+        spread(Diet, Value, sep = &quot;.&quot;) #Produce a dataset with diets in columns</code></pre>
+<pre class="r"><code>kable(head(Chick_print))</code></pre>
 <table>
 <thead>
 <tr class="header">
