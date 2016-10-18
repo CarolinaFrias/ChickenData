@@ -1,0 +1,229 @@
+---
+title: "ChickenData example into a ShinyApp"
+author: "Andreia Carlos"
+date: "18 October 2016"
+output: html_document
+---
+        
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This ShinyApp presents tables with summary statistics of the Chicken's weight, for each diet. It is possible to filter the data by Time and compare the values in different times.
+
+
+## Data processing
+
+**Load required libraries**
+```{r load libraries}
+library(shiny)
+library(dplyr)
+library(tidyr)
+```
+
+**Process data into a format suitable for the shiny app**
+```{r data processing}
+Chick_print <- ChickWeight %>%
+        select(weight, Time, Diet) %>%
+        group_by(Diet, Time) %>%
+        summarise( 
+                N = n(),
+                Mean = mean(weight),
+                SD = sd(weight),
+                Median = median(weight),
+                Min = min(weight),
+                Max = max(weight)
+                ) %>%
+        mutate( #Creating new variables merging the previous ones and giving it the right format
+                pN = as.character(N), 
+               pMeanSD = sprintf("%6.1f(%6.2f)", Mean, SD),
+               pMedian = sprintf("%6.1f", Median),
+               pMinMax = sprintf("%6.1f-%6.1f", Min, Max)
+               ) %>%
+        select(Diet, Time, N, pMeanSD, pMedian, pMinMax) %>% #select only the variables of interest
+        gather("Statistics", "Value", 3:6) %>% #Get statistics into rows
+        spread(Diet, Value, sep = ".") #Produce a dataset with diets in columns
+
+```
+
+
+## Developing the App
+
+```{r define global variables}
+Chick_base <- Chick_print
+```
+
+# Test 2
+
+## Test with more than one table output
+
+**1. Develop UI***
+```{r ui}
+ui <- fluidPage(
+        titlePanel("Chicken Weight Data Summaries"),
+        
+         mainPanel(
+                tabsetPanel(
+                        tabPanel("All",
+                                  dataTableOutput("Chick_print")),
+                        tabPanel("Diet 1",
+                                 dataTableOutput("Chick_print1")),
+                        tabPanel("Diet 2",
+                                 dataTableOutput("Chick_print2")),
+                        tabPanel("Diet 3",
+                                  dataTableOutput("Chick_print3")),
+                        tabPanel("Diet 4",
+                                  dataTableOutput("Chick_print4"))
+                )
+        ),
+        # Create a new Row in the UI for selectInputs
+        fluidRow(
+                column(3,
+                       selectInput("Time0",
+                                   "Choose the baseline:",
+                                   c("All",
+                                     unique(as.character(Chick_base$Time))))
+                ),
+                uiOutput("Time1")
+        ),
+                # Create a new row for the table
+        fluidRow(
+                dataTableOutput("table")
+        )
+)
+```
+
+**2. Define a server App**
+```{r App server}
+
+server <- function(input, output){
+        output$Time1 <- renderUI({
+                if(input$Time0 != "All") {
+                        column(3,
+                       selectInput("Time1",
+                                   "Select a Time for comparison:",
+                                   c("All",
+                                     unique(as.character(Chick_base$Time))))
+                        )}
+        })
+        
+        output$Chick_print <- renderDataTable({
+                
+                if(input$Time0 == "All") {
+                        Chick_print <- Chick_base
+                }
+                else if(input$Time0 == input$Time1 | input$Time1 == "All") {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                }
+               else {
+                       Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                        Chick_print1 <- Chick_base[Chick_base$Time == input$Time1,]
+                }
+                Chick_print
+                })
+        
+        output$Chick_print1 <- renderDataTable({
+                
+                if(input$Time0 == "All") {
+                        Chick_print <- Chick_base
+                }
+                else if(input$Time0 == input$Time1 | input$Time1 == "All") {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                }
+                else {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                        Chick_print1 <- Chick_base[Chick_base$Time == input$Time1,]
+                        
+                        Chick_print1 <- Chick_print %>%
+                                left_join(Chick_print1, "Statistics") %>%
+                                select(Statistics, Diet.1.x, Diet.1.y) 
+                }
+                Chick_print1
+               
+                })
+         output$Chick_print2 <- renderDataTable({
+                
+                if(input$Time0 == "All") {
+                        Chick_print <- Chick_base
+                }
+                else if(input$Time0 == input$Time1 | input$Time1 == "All" ) {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                }
+                else {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                        Chick_print1 <- Chick_base[Chick_base$Time == input$Time1,]
+                        
+                        Chick_print2 <- Chick_print %>%
+                                left_join(Chick_print1, "Statistics") %>%
+                                select(Statistics, Diet.2.x, Diet.2.y)
+ 
+                }
+                Chick_print2
+               
+                })
+         output$Chick_print3 <- renderDataTable({
+                
+                if(input$Time0 == "All") {
+                        Chick_print <- Chick_base
+                }
+                else if(input$Time0 == input$Time1 | input$Time1 == "All" ) {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                }
+                else {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                        Chick_print1 <- Chick_base[Chick_base$Time == input$Time1,]
+                        
+                        Chick_print3 <- Chick_print %>%
+                                left_join(Chick_print1, "Statistics") %>%
+                                select(Statistics, Diet.3.x, Diet.3.y)
+                        
+                }
+                Chick_print3
+               
+                })
+         output$Chick_print4 <- renderDataTable({
+                
+                if(input$Time0 == "All") {
+                        Chick_print <- Chick_base
+                }
+                else if(input$Time0 == input$Time1 | input$Time1 == "All" ) {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                }
+                else {
+                        Chick_print <- Chick_base[Chick_base$Time == input$Time0,]
+                        Chick_print1 <- Chick_base[Chick_base$Time == input$Time1,]
+                        
+                        Chick_print4 <- Chick_print %>%
+                                left_join(Chick_print1, "Statistics") %>%
+                                select(Statistics, Diet.4.x, Diet.4.y)
+                        
+                }
+                Chick_print4
+               
+                })
+        }
+
+```
+
+```{r data tables}
+        Chick_print0 <- Chick_base[Chick_base$Time == 0,]
+        Chick_print1 <- Chick_print %>%
+                left_join(Chick_print0, "Statistics") %>%
+                select(Statistics, Diet.1.x, Diet.1.y)
+        Chick_print2 <- Chick_print %>%
+                left_join(Chick_print0, "Statistics") %>%
+                select(Statistics, Diet.2.x, Diet.2.y)
+        Chick_print3 <- Chick_print %>%
+                left_join(Chick_print0, "Statistics") %>%
+                select(Statistics, Diet.3.x, Diet.3.y)
+        Chick_print4 <- Chick_print %>%
+                left_join(Chick_print0, "Statistics") %>%
+                select(Statistics, Diet.4.x, Diet.4.y)
+```
+
+**3. Run the App**
+```{r run}
+shinyApp(server = server, ui = ui)
+```
